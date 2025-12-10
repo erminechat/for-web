@@ -169,11 +169,6 @@ export const ServerList = (props: Props) => {
           </a>
           <UserMenu anchor={menuButton} />
         </Tooltip>
-        <Tooltip placement="right" content="Switch back to legacy app">
-          <a href="https://app.revolt.chat" class={entryContainer()}>
-          <Symbol>history</Symbol>
-          </a>
-        </Tooltip>
         <For each={props.unreadConversations.slice(0, 9)}>
           {(conversation) => (
             <Tooltip placement="right" content={conversation.displayName}>
