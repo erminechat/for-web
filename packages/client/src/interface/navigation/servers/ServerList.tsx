@@ -14,6 +14,7 @@ import { useModals } from "@revolt/modal";
 import { useNavigate } from "@revolt/routing";
 import { useState } from "@revolt/state";
 import { Avatar, Column, Text, Time, Unreads, UserStatus } from "@revolt/ui";
+import { Symbol } from "@revolt/ui/components/utils/Symbol";
 
 import MdAdd from "@material-design-icons/svg/filled/add.svg?component-solid";
 import MdExplore from "@material-design-icons/svg/filled/explore.svg?component-solid";
@@ -24,7 +25,6 @@ import { Tooltip } from "../../../../components/ui/components/floating";
 import { Draggable } from "../../../../components/ui/components/utils/Draggable";
 
 import { UserMenu } from "./UserMenu";
-import { Symbol } from "@revolt/ui/components/utils/Symbol";
 
 interface Props {
   /**
@@ -119,97 +119,95 @@ export const ServerList = (props: Props) => {
 
   return (
     <ServerListBase>
-      <div use:invisibleScrollable={{ direction: "y", class: listBase() }}>
-        <a
-          class={entryContainer({
-            indicator: !props.selectedServer() ? "selected" : undefined,
-          })}
-          href="/app"
-          use:floating={{
-            tooltip: {
-              content: `You have ${homeNotifications()} pending friend requests.`,
-              placement: "right",
-            },
-          }}
-        >
+      <a
+        class={entryContainer({
+          indicator: !props.selectedServer() ? "selected" : undefined,
+        })}
+        href="/app"
+        use:floating={{
+          tooltip: {
+            content: `You have ${homeNotifications()} pending friend requests.`,
+            placement: "right",
+          },
+        }}
+      >
+        <Avatar
+          size={42}
+          fallback={<MdHome />}
+          holepunch={homeNotifications() ? "top-right" : undefined}
+          overlay={
+            <Show when={homeNotifications()}>
+              <Unreads.Graphic
+                unread={homeNotifications() !== 0}
+                count={homeNotifications()}
+              />
+            </Show>
+          }
+        />
+      </a>
+      <Tooltip
+        placement="right"
+        content={() => (
+          <Column>
+            <span>{props.user.username}</span>
+            <Text class="label" size="small">
+              {props.user.presence}
+            </Text>
+          </Column>
+        )}
+        aria={props.user.username}
+      >
+        <a ref={setMenuButton} class={entryContainer()}>
           <Avatar
             size={42}
-            fallback={<MdHome />}
-            holepunch={homeNotifications() ? "top-right" : undefined}
-            overlay={
-              <Show when={homeNotifications()}>
-                <Unreads.Graphic
-                  unread={homeNotifications() !== 0}
-                  count={homeNotifications()}
-                />
-              </Show>
-            }
+            src={props.user.avatarURL}
+            holepunch={"bottom-right"}
+            overlay={<UserStatus.Graphic status={props.user.presence} />}
+            interactive
           />
         </a>
-        <Tooltip
-          placement="right"
-          content={() => (
-            <Column>
-              <span>{props.user.username}</span>
-              <Text class="label" size="small">
-                {props.user.presence}
-              </Text>
-            </Column>
-          )}
-          aria={props.user.username}
-        >
-          <a ref={setMenuButton} class={entryContainer()}>
-            <Avatar
-              size={42}
-              src={props.user.avatarURL}
-              holepunch={"bottom-right"}
-              overlay={<UserStatus.Graphic status={props.user.presence} />}
-              interactive
-            />
-          </a>
-          <UserMenu anchor={menuButton} />
-        </Tooltip>
-        <For each={props.unreadConversations.slice(0, 9)}>
-          {(conversation) => (
-            <Tooltip placement="right" content={conversation.displayName}>
-              <a
-                class={entryContainer()}
-                use:floating={props.menuGenerator(conversation)}
-                href={`/channel/${conversation.id}`}
-              >
-                <Avatar
-                  size={42}
-                  // TODO: fix this
-                  src={conversation.iconURL}
-                  holepunch={conversation.unread ? "top-right" : "none"}
-                  overlay={
-                    <>
-                      <Show when={conversation.unread}>
-                        <Unreads.Graphic
-                          count={conversation.mentions?.size ?? 0}
-                          unread
-                        />
-                      </Show>
-                    </>
-                  }
-                  fallback={
-                    conversation.name ?? conversation.recipient?.username
-                  }
-                  interactive
-                />
-              </a>
-            </Tooltip>
-          )}
-        </For>
-        <Show when={props.unreadConversations.length > 9}>
-          <a class={entryContainer()} href={`/`}>
-            <Avatar
-              size={42}
-              fallback={<>+{props.unreadConversations.length - 9}</>}
-            />
-          </a>
-        </Show>
-        <LineDivider />
+        <UserMenu anchor={menuButton} />
+      </Tooltip>
+      <For each={props.unreadConversations.slice(0, 9)}>
+        {(conversation) => (
+          <Tooltip placement="right" content={conversation.displayName}>
+            <a
+              class={entryContainer()}
+              use:floating={props.menuGenerator(conversation)}
+              href={`/channel/${conversation.id}`}
+            >
+              <Avatar
+                size={42}
+                // TODO: fix this
+                src={conversation.iconURL}
+                holepunch={conversation.unread ? "top-right" : "none"}
+                overlay={
+                  <>
+                    <Show when={conversation.unread}>
+                      <Unreads.Graphic
+                        count={conversation.mentions?.size ?? 0}
+                        unread
+                      />
+                    </Show>
+                  </>
+                }
+                fallback={conversation.name ?? conversation.recipient?.username}
+                interactive
+              />
+            </a>
+          </Tooltip>
+        )}
+      </For>
+      <Show when={props.unreadConversations.length > 6}>
+        <a class={entryContainer()} href={`/`}>
+          <Avatar
+            size={42}
+            fallback={<>+{props.unreadConversations.length - 9}</>}
+          />
+        </a>
+      </Show>
+      <LineDivider />
+      <div use:invisibleScrollable={{ direction: "y", class: listBase() }}>
         <Draggable
           type="servers"
           items={props.orderedServers}
