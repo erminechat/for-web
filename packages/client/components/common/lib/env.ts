@@ -24,6 +24,19 @@ export default {
     "https://stoat.chat/api",
   ].includes(DEFAULT_API_URL),
   /**
+    /**
+   * ID of the offical server of the instance
+   */
+  OFFICAL_SERVER: [
+    "01KA80SZFGA7DPY284WPJYKG5G"
+  ],
+  /**
+   * Donation URL
+   */
+  DONATION_URL: [
+    "https://example.org"
+  ],
+  /**
    * What WS server to connect to by default.
    */
   DEFAULT_WS_URL:

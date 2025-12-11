@@ -96,10 +96,9 @@ export function HomePage() {
   const navigate = useNavigate();
   const client = useClient();
 
-  // check if we're stoat.chat; if so, check if the user is in the Lounge
-  const showLoungeButton = CONFIGURATION.IS_STOAT;
-  const isInLounge =
-    client()!.servers.get("01F7ZSBSFHQ8TA81725KQCSDDP") !== undefined;
+  // check if the user is in the offical server
+  const isInOfficalServer =
+    client()!.servers.get(`${CONFIGURATION.OFFICAL_SERVER}`) !== undefined;
 
   return (
     <Base>
@@ -141,9 +140,9 @@ export function HomePage() {
               <Trans>Create a group or server</Trans>
             </CategoryButton>
             <Switch fallback={null}>
-              <Match when={showLoungeButton && isInLounge}>
+              <Match when={isInOfficalServer}>
                 <CategoryButton
-                  onClick={() => navigate("/server/01F7ZSBSFHQ8TA81725KQCSDDP")}
+                  onClick={() => navigate(`/server/${CONFIGURATION.OFFICAL_SERVER}`)}
                   description={
                     <Trans>
                       You can report issues and discuss improvements with us
@@ -152,14 +151,14 @@ export function HomePage() {
                   }
                   icon={<MdGroups3 />}
                 >
-                  <Trans>Go to the Stoat Lounge</Trans>
+                  <Trans>Go to the Offical server</Trans>
                 </CategoryButton>
               </Match>
-              <Match when={showLoungeButton && !isInLounge}>
+              <Match when={!isInOfficalServer}>
                 <CategoryButton
                   onClick={() => {
                     client()
-                      .api.get("/invites/Testers")
+                      .api.get(`/invites/Testers`)
                       .then((invite) =>
                         PublicChannelInvite.from(client(), invite),
                       )
@@ -173,7 +172,7 @@ export function HomePage() {
                   }
                   icon={<MdGroups3 />}
                 >
-                  <Trans>Join the Stoat Lounge</Trans>
+                  <Trans>Join the Offical server</Trans>
                 </CategoryButton>
               </Match>
             </Switch>
@@ -181,7 +180,7 @@ export function HomePage() {
               variant="tertiary"
               onClick={() =>
                 window.open(
-                  "https://wiki.revolt.chat/notes/project/financial-support/", // TODO-STOAT-WEB
+                  `${CONFIGURATION.DONATION_URL}`,
                 )
               }
               description={
@@ -189,7 +188,7 @@ export function HomePage() {
               }
               icon={<MdPayments />}
             >
-              <Trans>Donate to Stoat</Trans>
+              <Trans>Donate to the Team</Trans>
             </CategoryButton>
           </SeparatedColumn>
           <SeparatedColumn>
@@ -203,7 +202,7 @@ export function HomePage() {
                 }
                 icon={<MdExplore />}
               >
-                <Trans>Discover Stoat</Trans>
+                <Trans>Discover</Trans>
               </CategoryButton>
             </Show>
             <CategoryButton
@@ -221,7 +220,7 @@ export function HomePage() {
               }
               icon={<MdRateReview {...iconSize(22)} />}
             >
-              <Trans>Give feedback on Stoat</Trans>
+              <Trans>Give feedback</Trans>
             </CategoryButton>
             <CategoryButton
               onClick={() => openModal({ type: "settings", config: "user" })}
