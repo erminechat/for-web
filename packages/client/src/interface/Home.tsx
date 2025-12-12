@@ -125,19 +125,18 @@ export function HomePage() {
             <CategoryButton
               onClick={() =>
                 openModal({
-                  type: "create_group_or_server",
+                  type: "add_group_or_server",
                   client: client()!,
                 })
               }
               description={
                 <Trans>
-                  Invite all of your friends, some cool bots, and throw a big
-                  party.
+                  Create a group or server or join a server. Invite your friends, some cool bots, and throw a party.
                 </Trans>
               }
               icon={<MdAddCircle />}
             >
-              <Trans>Create a group or server</Trans>
+              <Trans>Add group or server</Trans>
             </CategoryButton>
             <Switch fallback={null}>
               <Match when={isInOfficalServer}>
@@ -158,7 +157,7 @@ export function HomePage() {
                 <CategoryButton
                   onClick={() => {
                     client()
-                      .api.get(`/invites/Testers`)
+                      .api.get(`/invites/mutiny`)
                       .then((invite) =>
                         PublicChannelInvite.from(client(), invite),
                       )

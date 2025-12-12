@@ -34,6 +34,18 @@ export type Modals =
     client: Client;
   }
   | {
+    type: "add_group";
+    client: Client;
+  }
+  | {
+    type: "add_server";
+    client: Client;
+  }
+  | {
+    type: "add_group_or_server";
+    client: Client;
+  }
+  | {
     type: "add_members_to_group";
     client: Client;
     group: Channel;

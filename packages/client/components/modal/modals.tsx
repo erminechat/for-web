@@ -5,7 +5,10 @@ import { CONFIGURATION } from "@revolt/common";
 import { type ActiveModal } from ".";
 import { AddBotModal } from "./modals/AddBot";
 import { AddFriendModal } from "./modals/AddFriend";
+import { AddGroupModal } from "./modals/AddGroup";
+import { AddServerModal } from "./modals/AddServer";
 import { AddMembersToGroupModal } from "./modals/AddMembersToGroup";
+import { AddGroupOrServerModal } from "./modals/AddGroupOrServer";
 import { BanMemberModal } from "./modals/BanMember";
 import { BanNonMemberModal } from "./modals/BanNonMember";
 import { ChangelogModal } from "./modals/Changelog";
@@ -77,6 +80,12 @@ export function RenderModal(props: ActiveModal & { onClose: () => void }) {
       return <AddBotModal {...modalProps} />;
     case "add_friend":
       return <AddFriendModal {...modalProps} />;
+    case "add_group":
+      return <AddGroupModal {...modalProps} />;
+    case "add_server":
+      return <AddServerModal {...modalProps} />;
+    case "add_group_or_server":
+      return <AddGroupOrServerModal {...modalProps} />;
     case "ban_member":
       return <BanMemberModal {...modalProps} />;
     case "ban_non_member":
