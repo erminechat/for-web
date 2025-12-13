@@ -44,30 +44,40 @@ const TEXT_CHANNEL_TYPES: Channel["type"][] = [
 export const ChannelPage: Component = () => {
   const params = useParams();
   const client = useClient();
-  const channel = createMemo(() => client()!.channels.get(params.channel)!);
+  const channel = createMemo(() => client()?.channels.get(params.channel));
 
   return (
     <Base>
-      <AgeGate
-        enabled={channel().mature}
-        contentId={channel().id}
-        contentName={"#" + channel().name}
-        contentType="channel"
-      >
-        <Switch fallback="Unknown channel type!">
-          <Match when={!channel()}>
-            <Navigate href={"../.."} />
-          </Match>
-          <Match when={TEXT_CHANNEL_TYPES.includes(channel()!.type)}>
-            <TextChannel channel={channel()} />
-          </Match>
-          {/* <Match when={channel()!.type === "VoiceChannel"}>
+      <Switch>
+        <Match when={!channel()}>
+          <Navigate href={"../.."} />
+        </Match>
+
+        <Match when={channel()}>
+          {(ch) => (
+            <AgeGate
+              enabled={ch().mature}
+              contentId={ch().id}
+              contentName={"#" + ch().name}
+              contentType="channel"
+            >
+              <Switch fallback="Unknown channel type!">
+                <Match when={!channel()}>
+                  <Navigate href={"../.."} />
+                </Match>
+                <Match when={TEXT_CHANNEL_TYPES.includes(channel()!.type)}>
+                  <TextChannel channel={ch()} />
+                </Match>
+                {/* <Match when={channel()!.type === "VoiceChannel"}>
             <Header placement="primary">
               <ChannelHeader channel={channel()} />
             </Header>
           </Match> */}
-        </Switch>
-      </AgeGate>
+              </Switch>
+            </AgeGate>
+          )}
+        </Match>
+      </Switch>
     </Base>
   );
 };

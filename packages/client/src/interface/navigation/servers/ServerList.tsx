@@ -1,9 +1,17 @@
-import { Accessor, For, Show, createMemo } from "solid-js";
+import {
+  Accessor,
+  For,
+  Show,
+  createEffect,
+  createMemo,
+  onCleanup,
+} from "solid-js";
 import { JSX } from "solid-js";
 import { createSignal } from "solid-js";
 
 import { Trans } from "@lingui-solid/solid/macro";
 import { Channel, Server, User } from "stoat.js";
+import { HydratedServer } from "stoat.js/lib/hydration/server";
 import { cva } from "styled-system/css";
 import { styled } from "styled-system/jsx";
 
@@ -72,6 +80,18 @@ export const ServerList = (props: Props) => {
   const client = useClient();
   const navigate = useNavigate();
   const { openModal } = useModals();
+
+  createEffect(() => {
+    const onServerDelete = (server: HydratedServer) => {
+      const newOrder = props.orderedServers
+        .map((s) => s.id)
+        .filter((id) => id !== server.id);
+      props.setServerOrder(newOrder);
+    };
+
+    client()?.on("serverDelete", onServerDelete);
+    onCleanup(() => client()?.off("serverDelete", onServerDelete));
+  });
 
   const navigateServer = (byOffset: number) => {
     const serverId = props.selectedServer();

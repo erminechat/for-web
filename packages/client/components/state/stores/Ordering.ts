@@ -88,6 +88,14 @@ export class Ordering extends AbstractStore<"ordering", TypeOrdering> {
   }
 
   /**
+   * Remove server from ordering
+   * @param id Server ID
+   */
+  removeServer(id: string) {
+    this.set("servers", this.get().servers.filter((sid) => sid !== id));
+  }
+  
+  /**
    * All known active DM conversations ordered by last updated
    * @returns List of Channel objects
    */
